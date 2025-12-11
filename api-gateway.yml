@@ -1,1 +1,106 @@
+server:
+  port: 8088
+spring:
+  application:
+    name: api-gateway
+  security:
+    jwt:
+      secret: "M8/cbuMrPtqktMPd+LSFpgUz+crgaH3tTRjVPZS4fVc="
+  cloud:
+    gateway:
+      routes:
+        # 1) User Service Route
+        - id: user-service
+          uri: lb://user-service
+          predicates:
+            - Path=/api/auth/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: userCircuitBreaker
+                fallbackUri: forward:/fallback/user
+            - name: ModifyResponseBody
+              args:
+                inClass: java.lang.String
+                outClass: java.lang.String
+                rewriteFunction: "#{@errorBodyRewrite}"
+        # 2) Inventory Service Route
+        - id: inventory-service
+          uri: lb://inventory-service
+          predicates:
+            - Path=/api/book/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: inventoryCircuitBreaker
+                fallbackUri: forward:/fallback/inventory
+            - name: ModifyResponseBody
+              args:
+                inClass: java.lang.String
+                outClass: java.lang.String
+                rewriteFunction: "#{@errorBodyRewrite}"    
+        # 3) Catalog Service Route
+        - id: catalog-service
+          uri: lb://catalog-service
+          predicates:
+            - Path=/api/catalogue/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: catalogCircuitBreaker
+                fallbackUri: forward:/fallback/catalog
+            - name: ModifyResponseBody
+              args:
+                inClass: java.lang.String
+                outClass: java.lang.String
+                rewriteFunction: "#{@errorBodyRewrite}"
+        # 4) Cart Service Route
+        - id: cart-service
+          uri: lb://cart-service
+          predicates:
+            - Path=/api/cart/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: cartCircuitBreaker
+                fallbackUri: forward:/fallback/cart
+            - name: ModifyResponseBody
+              args:
+                inClass: java.lang.String
+                outClass: java.lang.String
+                rewriteFunction: "#{@errorBodyRewrite}" 
+        # 5) Order Service Route
+        - id: order-service
+          uri: lb://order-service
+          predicates:
+            - Path=/api/orders/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: orderCircuitBreaker
+                fallbackUri: forward:/fallback/order
+            - name: ModifyResponseBody
+              args:
+                inClass: java.lang.String
+                outClass: java.lang.String
+                rewriteFunction: "#{@errorBodyRewrite}"
+      httpclient:
+        connect-timeout: 3000
+        response-timeout: 5000ms
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: when-authorized
+  tracing:
+    enabled: false
+
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
