@@ -1,1 +1,53 @@
+server:
+  port: 8082
+spring:
+  application:
+    name: inventory-service
+  datasource:
+    url: jdbc:h2:mem:bookdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+    defer-datasource-initialization: true
+  sql:
+    init:
+      mode: always
 
+jwt:
+  secret: M8/cbuMrPtqktMPd+LSFpgUz+crgaH3tTRjVPZS4fVc=
+  issuer: OnlineBookStore
+  expiration: 1800000
+
+logging:
+  level:
+    root: INFO
+    org.springframework.security: TRACE
+    com.cg.online.book.inventory: DEBUG
+    org.springframework: INFO
+    org.hibernate.SQL: WARN
+  pattern:
+    level:   "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-},user=%X{userId:-anon}]"
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [${spring.application.name},%X{traceId:-},%X{spanId:-},user=%X{userId:-anon}] [%thread] %logger{36} - %msg%n"
+    file:    "%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [${spring.application.name},%X{traceId:-},%X{spanId:-},user=%X{userId:-anon}] [%thread] %logger{36} - %msg%n"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+      
