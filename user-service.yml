@@ -29,6 +29,7 @@ logging:
     root: INFO
     org.springframework.security: TRACE
     com.cg.online.book.store.security: DEBUG
+    org.springframework.cloud.config: DEBUG
     org.springframework: INFO
     org.hibernate.SQL: WARN
   pattern:
