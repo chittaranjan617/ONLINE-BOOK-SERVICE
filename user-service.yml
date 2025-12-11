@@ -1,19 +1,16 @@
 spring:
   application:
     name: user-service
-
   datasource:
     # keep the in-memory DB alive and simple for dev
     url: jdbc:h2:mem:userdb
     driver-class-name: org.h2.Driver
     username: sa
     password:
-
   h2:
     console:
       enabled: true
       path: /h2-console
-
   jpa:
     hibernate:
       ddl-auto: update
@@ -23,7 +20,6 @@ spring:
         dialect: org.hibernate.dialect.H2Dialect
     # ensures data.sql runs AFTER JPA creates tables (fixes table-not-found)
     defer-datasource-initialization: true
-
   sql:
     init:
       mode: always
