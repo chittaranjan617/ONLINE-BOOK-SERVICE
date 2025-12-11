@@ -1,1 +1,55 @@
+server:
+  port: 8083
+spring:
+  application:
+    name: catalog-service
+  datasource:
+    url: jdbc:h2:mem:cataloguedb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
 
+jwt:
+  secret: M8/cbuMrPtqktMPd+LSFpgUz+crgaH3tTRjVPZS4fVc=
+  issuer: CatalogueAndSearch
+  expiration: 1800000
+
+logging:
+  level:
+    root: INFO
+    org.springframework.security: TRACE
+    com.cg.online.book.catalogue: DEBUG
+    org.springframework: INFO
+    org.hibernate.SQL: WARN
+  pattern:
+    level:   "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-},user=%X{userId:-anon}]"
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [${spring.application.name},%X{traceId:-},%X{spanId:-},user=%X{userId:-anon}] [%thread] %logger{36} - %msg%n"
+    file:    "%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [${spring.application.name},%X{traceId:-},%X{spanId:-},user=%X{userId:-anon}] [%thread] %logger{36} - %msg%n"
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
